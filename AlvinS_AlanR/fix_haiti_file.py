@@ -23,28 +23,4 @@ def fix_file(in_csv, out_csv, admin_code_column_index = 0):
 def _fix_code(admin_code):
     """Returns code with 5th character removed.  For example,
        given HT12345-01, return "HT1245-01"""
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    return admin_code[:4] + admin_code[5:]
