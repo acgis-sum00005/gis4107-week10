@@ -18,6 +18,13 @@ def fix_file(in_csv, out_csv, admin_code_column_index = 0):
        admin_code_column_index = 0-based index of column containing the
                                  admin_code
     """
+    with open(in_csv, newline='') as infile, open(out_csv, 'w', newline='') as outfile:
+        reader = csv.reader(infile)
+        writer = csv.writer(outfile)
+        writer.writerow(next(reader))
+        for row in reader:
+            row[admin_code_column_index] = _fix_code(row[admin_code_column_index])
+            writer.writerow(row)
 
 
 def _fix_code(admin_code):

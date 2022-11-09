@@ -17,4 +17,4 @@ def write_to_file(file_name, content):
 
 def get_file_second_line(file_name):
     with open(file_name) as file:
-        return file.readlines()[1]
+        return file.readlines()[1].removesuffix("\n")

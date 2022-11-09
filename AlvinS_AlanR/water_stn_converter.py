@@ -29,6 +29,7 @@
 # Created:     dd/mm/yyyy
 # ------------------------------------------------------------------------------
 
+import csv
 import json
 
 in_json_filename = ''
@@ -41,30 +42,54 @@ def json_to_csv():
 
     # Call load_json_file_to_dict()
     #
+    with open(in_json_filename) as json, open(out_csv_filename, 'w', newline='') as out:
+        dict = load_json_file_to_dict(json)
 
     # Use with to open out_csv_filename
     #
 
+        features = dict['features']
+
         # Write the header to the CSV file
         #
+        writer = csv.writer(out)
+        write_header = True
+        for feature in features:
+            attrs = feature['attributes']
+            if write_header:
+                writer.writerow(attrs.keys())
+                write_header = False
+            writer.writerow(attrs.values())
 
 
         # Loop through all the features and write the results to the CSV file
         #
 
 
+def normalize_json(data):
+    result = {}
+    for key, value in data.items():
+        if isinstance(value, dict):
+            normalized = normalize_json(value)
+            for subkey, subvalue in normalized.items():
+                result[key + '_' + subkey] = subvalue
+        else:
+            result[key] = value
+    return result
+
 def json_to_kml():
     """Converts a JSON file created using the water_stn_downloader module
     to KML"""
 
 
-def load_json_file_to_dict():
+def load_json_file_to_dict(file):
     """Use json.load(file_object) to convert the contents of in_json_filename
     to a Python dictionary.  Return the resulting dictionary.
     """
     # Use with to open in_json_filename and use that file object as an
     # argument to json.load.  This will return a Python dict with nested
     # lists and dictionaries
+    return json.load(file)
 
 
 def get_values_from_feature(feature):
@@ -89,4 +114,3 @@ def get_kml_footer():
 def get_placemark(name, longitude, latitude, wateroffice_link):
     """Return the KML Placemark element including start and end tags
     """
-
