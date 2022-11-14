@@ -46,21 +46,15 @@ def json_to_csv(in_json_filename, out_csv_filename):
         # Write the header to the CSV file
         #
         writer = csv.writer(out)
-        write_header = True
+        writer.writerow(['StationNumber', 'StationName', 'Longitude', 'Latitude', 'WaterOfficeLink'])
 
+        fields = ('Station_Number', 'Station_Name', 'Longitude', 'Latitude', 'Realtime_Water_Quantity_Data')
         # Loop through all the features and write the results to the CSV file
         #
         for feature in features:
-            # Each feature is a dictionary with two keys, 'attributes' and 'geometry',
-            # each of whose values is itself a dictionary with scalar values.
             attrs = feature['attributes']
-            geom = feature['geometry']
-            # Merge the two sub-dictionaries into one.
-            attrs.update(geom)
-            if write_header:
-                writer.writerow(attrs.keys())
-                write_header = False
-            writer.writerow(attrs.values())
+            values = [attrs[field] for field in fields]
+            writer.writerow(values)
 
 
 def json_to_kml():

@@ -28,3 +28,15 @@ def test_get_values_from_feature():
     expected = ("01AD002", "Saint John River at Fort Kent", "-68.59583", "47.25806")
     actual = wsc.get_values_from_feature(feature)
     assert actual == expected
+
+def test_json_to_csv():
+    csv_path = "test.csv"
+    wsc.json_to_csv(in_json_filename=path, out_csv_filename=csv_path)
+    with open(csv_path) as csv:
+        # The first feature
+        expected = ["01AD002", "Saint John River at Fort Kent", "-68.59583", "47.25806", "http://www.wateroffice.ec.gc.ca/report/report_e.html?type=realTime&stn=01AD002"]
+        # Skip the header
+        csv.readline()
+        # Remove the trailing newline, split on commas
+        actual = csv.readline().removesuffix('\n').split(',')
+        assert expected == actual
