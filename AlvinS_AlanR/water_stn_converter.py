@@ -32,21 +32,14 @@
 import csv
 import json
 
-in_json_filename = ''
-out_csv_filename = ''
 out_kml_filename = ''
 
-def json_to_csv():
+def json_to_csv(in_json_filename, out_csv_filename):
     """Converts a JSON file created using the water_stn_downloader module
     to CSV"""
+    dict = load_json_file_to_dict(in_json_filename)
 
-    # Call load_json_file_to_dict()
-    #
-    with open(in_json_filename) as json, open(out_csv_filename, 'w', newline='') as out:
-        dict = load_json_file_to_dict(json)
-
-    # Use with to open out_csv_filename
-    #
+    with open(out_csv_filename, 'w', newline='') as out:
 
         features = dict['features']
 
@@ -54,47 +47,42 @@ def json_to_csv():
         #
         writer = csv.writer(out)
         write_header = True
+
+        # Loop through all the features and write the results to the CSV file
+        #
         for feature in features:
+            # Each feature is a dictionary with two keys, 'attributes' and 'geometry',
+            # each of whose values is itself a dictionary with scalar values.
             attrs = feature['attributes']
+            geom = feature['geometry']
+            # Merge the two sub-dictionaries into one.
+            attrs.update(geom)
             if write_header:
                 writer.writerow(attrs.keys())
                 write_header = False
             writer.writerow(attrs.values())
 
 
-        # Loop through all the features and write the results to the CSV file
-        #
-
-
-def normalize_json(data):
-    result = {}
-    for key, value in data.items():
-        if isinstance(value, dict):
-            normalized = normalize_json(value)
-            for subkey, subvalue in normalized.items():
-                result[key + '_' + subkey] = subvalue
-        else:
-            result[key] = value
-    return result
-
 def json_to_kml():
     """Converts a JSON file created using the water_stn_downloader module
     to KML"""
 
 
-def load_json_file_to_dict(file):
+def load_json_file_to_dict(filename):
     """Use json.load(file_object) to convert the contents of in_json_filename
     to a Python dictionary.  Return the resulting dictionary.
     """
     # Use with to open in_json_filename and use that file object as an
     # argument to json.load.  This will return a Python dict with nested
     # lists and dictionaries
-    return json.load(file)
+    with open(filename) as file:
+        return json.load(file)
 
 
 def get_values_from_feature(feature):
     """Given a dictionary of feature attributes, return the following:
         Station_Number, Station_name, Longitude, Latitude  """
+    return feature['Station_Number'], feature['Station_Name'], feature['Longitude'], feature['Latitude']
 
 
 def get_wateroffice_link(station_number):

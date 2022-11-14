@@ -10,19 +10,21 @@
 #-------------------------------------------------------------------------------
 
 import json
+import os
 import water_stn_converter as wsc
 
+path = os.path.join(os.path.dirname(__file__), 'data/water_stn.json')
 
 def test_load_json_file_to_dict():
-    expected = ''
-    wsc.in_json_filename = ''
-    wsc.load_json_file_to_dict()
-    actual = ''
+    expected = "01AD002"
+    dict = wsc.load_json_file_to_dict(path)
+    actual = dict['features'][0]['attributes']['Station_Number']
     assert actual == expected
 
 
 def test_get_values_from_feature():
-    """Docstring"""
-    expected = ""
-    actual = ""
-
+    dict = wsc.load_json_file_to_dict(path)
+    feature = dict['features'][0]['attributes']
+    expected = ("01AD002", "Saint John River at Fort Kent", "-68.59583", "47.25806")
+    actual = wsc.get_values_from_feature(feature)
+    assert actual == expected
