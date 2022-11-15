@@ -48,12 +48,13 @@ def json_to_csv(in_json_filename, out_csv_filename):
         writer = csv.writer(out)
         writer.writerow(['StationNumber', 'StationName', 'Longitude', 'Latitude', 'WaterOfficeLink'])
 
-        fields = ('Station_Number', 'Station_Name', 'Longitude', 'Latitude', 'Realtime_Water_Quantity_Data')
+        fields = ('Station_Number', 'Station_Name', 'Longitude', 'Latitude')
         # Loop through all the features and write the results to the CSV file
         #
         for feature in features:
             attrs = feature['attributes']
             values = [attrs[field] for field in fields]
+            values.append(get_wateroffice_link(attrs['Station_Number']))
             writer.writerow(values)
 
 
@@ -81,6 +82,7 @@ def get_values_from_feature(feature):
 
 def get_wateroffice_link(station_number):
     """Given a station_number, return the English wateroffice link"""
+    return "https://wateroffice.ec.gc.ca/report/real_time_e.html?stn=" + station_number
 
 
 def get_kml_header():
