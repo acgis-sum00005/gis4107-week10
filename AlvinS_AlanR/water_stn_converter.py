@@ -32,8 +32,6 @@
 import csv
 import json
 
-out_kml_filename = ''
-
 def json_to_csv(in_json_filename, out_csv_filename):
     """Converts a JSON file created using the water_stn_downloader module
     to CSV"""
@@ -58,7 +56,7 @@ def json_to_csv(in_json_filename, out_csv_filename):
             writer.writerow(values)
 
 
-def json_to_kml():
+def json_to_kml(in_json_filename, out_kml_filename):
     """Converts a JSON file created using the water_stn_downloader module
     to KML"""
 
@@ -88,13 +86,30 @@ def get_wateroffice_link(station_number):
 def get_kml_header():
     """Return the xml header including the Document start tag
     """
+    return '''<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document>
+'''
 
 
 def get_kml_footer():
     """Return the document and kml end tags
     """
+    return '''</Document>
+</kml>
+'''
 
 
 def get_placemark(name, longitude, latitude, wateroffice_link):
     """Return the KML Placemark element including start and end tags
     """
+    return f'''<Placemark>
+    <name>{name}</name>
+    <description>
+        {wateroffice_link}
+    </description>
+    <Point>
+        <coordinates>{longitude},{latitude},0</coordinates>
+    </Point>
+  </Placemark>
+'''

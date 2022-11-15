@@ -40,3 +40,21 @@ def test_json_to_csv():
         # Remove the trailing newline, split on commas
         actual = csv.readline().removesuffix('\n').split(',')
         assert expected == actual
+
+def test_get_placemark():
+    expected = '''<Placemark>
+    <name>Saint John River at Fort Kent</name>
+    <description>
+        https://wateroffice.ec.gc.ca/report/real_time_e.html?stn=01AD002
+    </description>
+    <Point>
+        <coordinates>-68.59583,47.25806,0</coordinates>
+    </Point>
+  </Placemark>
+'''
+    with open(path, newline='') as json_file:
+        json_features = json.load(json_file)
+        feature = json_features['features'][0]['attributes']
+    wlink = wsc.get_wateroffice_link(feature['Station_Number'])
+    actual = wsc.get_placemark(feature['Station_Name'], feature['Longitude'], feature['Latitude'], wlink)
+    assert expected == actual
