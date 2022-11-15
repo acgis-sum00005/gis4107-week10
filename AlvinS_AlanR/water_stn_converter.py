@@ -31,6 +31,8 @@
 
 import csv
 import json
+import os
+from zipfile import ZipFile
 
 def json_to_csv(in_json_filename, out_csv_filename):
     """Converts a JSON file created using the water_stn_downloader module
@@ -68,6 +70,15 @@ def json_to_kml(in_json_filename, out_kml_filename):
             placemark = get_placemark(attrs['Station_Name'], attrs['Longitude'], attrs['Latitude'], wo_link)
             outfile.write(placemark)
         outfile.write(get_kml_footer())
+
+
+def json_to_kmz(in_json_filename, out_kmz_filename):
+    """Converts a JSON file created using the water_stn_downloader module
+    to KMZ (i.e. KML inside zipfile)"""
+    kml_filename = os.path.splitext(out_kmz_filename)[0] + '.kml'
+    json_to_kml(in_json_filename, kml_filename)
+    with ZipFile(out_kmz_filename, 'w') as zip:
+        zip.write(kml_filename)
 
 
 def load_json_file_to_dict(filename):
