@@ -59,6 +59,14 @@ def json_to_csv(in_json_filename, out_csv_filename):
 def json_to_kml(in_json_filename, out_kml_filename):
     """Converts a JSON file created using the water_stn_downloader module
     to KML"""
+    json_data = load_json_file_to_dict(in_json_filename)
+    with open(out_kml_filename, 'w', newline='') as outfile:
+        outfile.write(get_kml_header())
+        for feature in json_data['features']:
+            wo_link = get_wateroffice_link(feature['Station_Number'])
+            placemark = get_placemark(feature['Station_Name'], feature['Longitude'], feature['Latitude'], wo_link)
+            outfile.write(placemark)
+        outfile.write(get_kml_footer())
 
 
 def load_json_file_to_dict(filename):
