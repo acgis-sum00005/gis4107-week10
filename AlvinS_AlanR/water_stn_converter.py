@@ -63,8 +63,9 @@ def json_to_kml(in_json_filename, out_kml_filename):
     with open(out_kml_filename, 'w', newline='') as outfile:
         outfile.write(get_kml_header())
         for feature in json_data['features']:
-            wo_link = get_wateroffice_link(feature['Station_Number'])
-            placemark = get_placemark(feature['Station_Name'], feature['Longitude'], feature['Latitude'], wo_link)
+            attrs = feature['attributes']
+            wo_link = get_wateroffice_link(attrs['Station_Number'])
+            placemark = get_placemark(attrs['Station_Name'], attrs['Longitude'], attrs['Latitude'], wo_link)
             outfile.write(placemark)
         outfile.write(get_kml_footer())
 
